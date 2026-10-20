@@ -105,8 +105,8 @@
 5. **Принятие решения ЛПР и обратная связь:** ЛПР запрашивает и изучает сформированный отчет. На его основании ЛПР принимает решение о приглашении кандидата на следующий этап собеседования либо об отказе. По итогам решения система генерирует персонализированное сообщение обратной связи и направляет его кандидату.
 
 #### 📊 Схема бизнес-процесса (BPMN 2.0)
-![Схема бизнес-процесса BPMN 2.0](docs/images/bpmn_process.png)
-> *Файл схемы в репозитории: `docs/images/bpmn_process.png`*
+![Схема бизнес-процесса BPMN 2.0](images/bpmn_process.png)
+> *Файл схемы в репозитории: `images/bpmn_process.png`*
 
 ---
 
@@ -126,16 +126,16 @@
 | **8** | `Отказ по скринингу` | Терминальное 🔴 | ЛПР ознакомился с отчетом и принял отрицательное решение. |
 
 #### 📊 Диаграмма состояний отклика (UML State Machine)
-![Диаграмма состояний UML State Machine](docs/images/state_machine.png)
-> *Файл схемы в репозитории: `docs/images/state_machine.png`*
+![Диаграмма состояний UML State Machine](images/state_machine.png)
+> *Файл схемы в репозитории: `images/state_machine.png`*
 
 ---
 
 ## 3. Функциональные требования
 
 ### 3.1. Диаграмма прецедентов (UML Use Case)
-![Диаграмма прецедентов UML Use Case](docs/images/use_case.png)
-> *Файл схемы в репозитории: `docs/images/use_case.png`*
+![Диаграмма прецедентов UML Use Case](images/use_case.png)
+> *Файл схемы в репозитории: `images/use_case.png`*
 
 ### 3.2. Требования по контурам пользователей
 
@@ -193,12 +193,12 @@
 ### 4.1. Диаграммы C4 (Context & Containers)
 
 #### 🌐 Уровень 1: Контекстная диаграмма (C4 System Context)
-![C4 System Context](docs/images/c4_context.png)
-> *Файл схемы в репозитории: `docs/images/c4_context.png`*
+![C4 System Context](images/c4_context.png)
+> *Файл схемы в репозитории: `images/c4_context.png`*
 
 #### 📦 Уровень 2: Диаграмма контейнеров / микросервисов (C4 Container Diagram)
-![C4 Container Diagram](docs/images/c4_containers.png)
-> *Файл схемы в репозитории: `docs/images/c4_containers.png`*
+![C4 Container Diagram](images/c4_containers.png)
+> *Файл схемы в репозитории: `images/c4_containers.png`*
 
 ### 4.2. Перечень микросервисов и технологический стек
 
@@ -218,7 +218,7 @@
 
 ```text
 hr-screening-helper/
-├── docs/
+├── 
 │   ├── images/                      # Архитектурные и проектировочные схемы
 │   │   ├── bpmn_process.png         # 1. Схема бизнес-процесса (BPMN 2.0)
 │   │   ├── er_database.png          # 2. ER-диаграмма БД (Crow's Foot)
@@ -250,8 +250,8 @@ hr-screening-helper/
 Взаимодействие компонентов реализуется через синхронные REST API-вызовы к центральному шлюзу `API Gateway` (`gate`).
 
 ### 5.1. Диаграмма последовательности (UML Sequence Diagram)
-![UML Sequence Diagram](docs/images/sequence_diagram.png)
-> *Файл схемы в репозитории: `docs/images/sequence_diagram.png`*
+![UML Sequence Diagram](images/sequence_diagram.png)
+> *Файл схемы в репозитории: `images/sequence_diagram.png`*
 
 ### 5.2. Основные эндпоинты `API Gateway`
 
@@ -301,8 +301,8 @@ hr-screening-helper/
 Хранение данных осуществляется в реляционной СУБД **PostgreSQL** и включает 7 связанных таблиц.
 
 ### 6.1. ER-диаграмма базы данных
-![ER-диаграмма RecruitmentDB](docs/images/er_database.png)
-> *Файл схемы в репозитории: `docs/images/er_database.png`*
+![ER-диаграмма RecruitmentDB](images/er_database.png)
+> *Файл схемы в репозитории: `images/er_database.png`*
 
 ### 6.2. Словарь данных (Описание таблиц)
 
