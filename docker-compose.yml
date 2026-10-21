@@ -1,0 +1,149 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: hrscreening_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: recruitmentdb
+      POSTGRES_USER: hruser
+      POSTGRES_PASSWORD: hrpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hruser -d recruitmentdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: hrscreening_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+
+  db_connector:
+    build:
+      context: ./services/db_connector
+      dockerfile: Dockerfile
+    container_name: hrscreening_db_connector
+    restart: always
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://hruser:hrpassword@postgres:5432/recruitmentdb
+    ports:
+      - "8001:8001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  api_gateway:
+    build:
+      context: ./services/api_gateway
+      dockerfile: Dockerfile
+    container_name: hrscreening_api_gateway
+    restart: always
+    env_file:
+      - .env
+    environment:
+      DB_CONNECTOR_URL: http://db_connector:8001
+      TTS_SERVICE_URL: http://tts_service:8002
+      STT_SERVICE_URL: http://stt_service:8003
+      LLM_SERVICE_URL: http://llm_service:8004
+      JSON_TO_WORD_URL: http://json_to_word:8005
+      FEEDBACK_GENERATOR_URL: http://feedback_generator:8006
+      NOTIFICATIONS_CENTER_URL: http://notifications_center:8007
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db_connector
+      - tts_service
+      - stt_service
+      - llm_service
+      - json_to_word
+      - feedback_generator
+      - notifications_center
+    volumes:
+      - reports_data:/app/reports
+
+  tts_service:
+    build:
+      context: ./services/tts_service
+      dockerfile: Dockerfile
+    container_name: hrscreening_tts_service
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "8002:8002"
+
+  stt_service:
+    build:
+      context: ./services/stt_service
+      dockerfile: Dockerfile
+    container_name: hrscreening_stt_service
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "8003:8003"
+
+  llm_service:
+    build:
+      context: ./services/llm_service
+      dockerfile: Dockerfile
+    container_name: hrscreening_llm_service
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "8004:8004"
+
+  json_to_word:
+    build:
+      context: ./services/json_to_word
+      dockerfile: Dockerfile
+    container_name: hrscreening_json_to_word
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "8005:8005"
+    volumes:
+      - reports_data:/app/reports
+
+  feedback_generator:
+    build:
+      context: ./services/feedback_generator
+      dockerfile: Dockerfile
+    container_name: hrscreening_feedback_generator
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "8006:8006"
+
+  notifications_center:
+    build:
+      context: ./services/notifications_center
+      dockerfile: Dockerfile
+    container_name: hrscreening_notifications_center
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "8007:8007"
+
+volumes:
+  postgres_data:
+  reports_data:
