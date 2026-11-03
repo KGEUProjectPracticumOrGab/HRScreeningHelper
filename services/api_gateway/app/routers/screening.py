@@ -26,6 +26,45 @@ notif_client = NotificationsClient()
 report_client = ReportClient()
 
 
+# ── 0. Списки откликов и служебные методы ────────────────────────────────────
+
+@router.get("/responses", summary="Список всех откликов")
+async def list_responses(skip: int = 0, limit: int = 100):
+    """
+    Возвращает список откликов для личных кабинетов HR-специалиста и ЛПР.
+    """
+    responses = await db_client.get_responses(skip=skip, limit=limit)
+    return responses
+
+
+@router.get("/{response_id}/result", summary="Полный результат скрининга")
+async def get_full_result(response_id: int):
+    """
+    Возвращает отклик и полный результат скрининга (с оценками AI и HR).
+    Используется в кабинете ЛПР и для детального просмотра.
+    """
+    response = await db_client.get_response(response_id)
+    if not response:
+        raise HTTPException(status_code=404, detail="Отклик не найден")
+    result = await db_client.get_screening_result(response_id)
+    return {
+        "response": response,
+        "screening_result": result,
+    }
+
+
+@router.post("/demo-seed", summary="Создать демонстрационные данные")
+async def seed_demo():
+    """
+    Создаёт тестовый проект, вакансию, вопросы, кандидата и отклик.
+    Возвращает токен для быстрого тестирования скрининга.
+    """
+    data = await db_client.create_demo_data()
+    if not data:
+        raise HTTPException(status_code=500, detail="Не удалось создать тестовые данные")
+    return data
+
+
 # ── 1. Транскрипт (слепое оценивание — без ai_score) ─────────────────────────
 
 @router.get("/{response_id}/transcript", summary="Просмотр транскрипта скрининга")

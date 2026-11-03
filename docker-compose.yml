@@ -144,6 +144,57 @@ services:
     ports:
       - "8007:8007"
 
+  frontend_candidate:
+    build:
+      context: ./services/frontend
+      dockerfile: Dockerfile
+    container_name: hrscreening_frontend_candidate
+    restart: always
+    env_file:
+      - .env
+    environment:
+      GATEWAY_URL: http://api_gateway:8000
+      APP_MODE: candidate
+    command: ["streamlit", "run", "app/candidate_app.py", "--server.port=8501", "--server.address=0.0.0.0", "--server.headless=true", "--browser.gatherUsageStats=false"]
+    ports:
+      - "8501:8501"
+    depends_on:
+      - api_gateway
+
+  frontend_hr:
+    build:
+      context: ./services/frontend
+      dockerfile: Dockerfile
+    container_name: hrscreening_frontend_hr
+    restart: always
+    env_file:
+      - .env
+    environment:
+      GATEWAY_URL: http://api_gateway:8000
+      APP_MODE: hr
+    command: ["streamlit", "run", "app/hr_app.py", "--server.port=8502", "--server.address=0.0.0.0", "--server.headless=true", "--browser.gatherUsageStats=false"]
+    ports:
+      - "8502:8502"
+    depends_on:
+      - api_gateway
+
+  frontend_lpr:
+    build:
+      context: ./services/frontend
+      dockerfile: Dockerfile
+    container_name: hrscreening_frontend_lpr
+    restart: always
+    env_file:
+      - .env
+    environment:
+      GATEWAY_URL: http://api_gateway:8000
+      APP_MODE: lpr
+    command: ["streamlit", "run", "app/lpr_app.py", "--server.port=8503", "--server.address=0.0.0.0", "--server.headless=true", "--browser.gatherUsageStats=false"]
+    ports:
+      - "8503:8503"
+    depends_on:
+      - api_gateway
+
 volumes:
   postgres_data:
   reports_data:

@@ -61,12 +61,16 @@ async def enter_session(token: str):
     if not response:
         raise HTTPException(status_code=404, detail="Сессия не найдена")
 
-    # Защита от повторного использования токен-ссылки (NFR — одноразовость)
-    if response["status"] != "Ожидание скрининга":
-        raise HTTPException(
-            status_code=403,
-            detail=f"Сессия недоступна. Текущий статус: {response['status']}",
-        )
+    # Разрешаем прохождение сессии в статусах ожидания и активного опроса
+    if response["status"] not in ("Ожидание скрининга", "Процесс скрининга"):
+        # Если скрининг уже завершён или отклонён, возвращаем данные для информационного экрана
+        return {
+            "response_id": response["id"],
+            "status": response["status"],
+            "candidate": response.get("candidate") or {},
+            "greeting_audio_base64": None,
+            "pdn_text": PDN_TEXT,
+        }
 
     candidate = response.get("candidate") or {}
     candidate_name = candidate.get("full_name", "Кандидат")
